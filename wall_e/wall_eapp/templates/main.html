@@ -3,35 +3,68 @@
 
 <head>
   <meta charset="UTF-8">
-  <title>Insert title here</title>
+  <title>WALL-E</title>
   <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+  <link rel="stylesheet" href="static/button.css">
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&display=swap" rel="stylesheet">
   <style>
-    img{
+    body{
+      height: 88vh;
+      background: url(static/댕댕이.jpg);
+      background-repeat : no-repeat;
+      background-size : cover;
+    }
+    #preview{
       width:350px;
       height:350px;
       object-fit: contain;
     }
-    body{
-      background-color:bisque;
-    }
     #mainDiv{
-      width:700px;
-      height:700px;
+      width:50%;
+      height:90%;
       margin:auto;
       margin-top:100px;
-      background-color: white;
+      background-color: rgba( 255, 255, 255, 0.5 );
       text-align: center;
+      z-index:0;
+    }
+    @font-face {
+      font-family: 'Arita-dotum-Medium';
+      src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_one@1.0/Arita-dotum-Medium.woff') format('woff');
+      font-weight: normal;
+      font-style: normal;
+    }
+    p {
+      font-family:'Arita-dotum-Medium';
+      font-size:25px;
+      font-weight: bold;
+    }
+    #title{
+      font-family:'Arita-dotum-Medium';
+      padding-top:60px;
+      font-weight: 1000;
+      color: #025402;
+      font-size: 52px;
+      margin-bottom:40px;
     }
   </style>
 </head>
 
 <body>
   <div id="mainDiv">
-    <button id="selectImg">사진선택</button>
+    <p id="title">어디에 버려야할까요?</p>
+    <button id="selectImg" class="btn-two green small">select picture</button>
     <br>
     <img id="preview" style="display:none">
     <br>
-    <button id="submit_btn" style="display:none">go</button>
+    <button id="submit_btn" class="btn-two green small" style="display:none">go</button>
+    <br>
+    <div>
+      <p id="result"></p>
+    </div>
     <form id="imgForm" enctype="multipart/form-data" method="post" style="display: none">
       {% csrf_token %}
       <input type="file" accept=".jpg, .jpeg, .png, .JPG, .JPEG, .gif" name="img" id="img" onchange="readURL(this);">
@@ -50,15 +83,14 @@
       $.ajax({
         url: "/classify/",
         type: "POST",
-        contentType: false,               // * 중요 *
-        processData: false,               // * 중요 *
-        enctype: 'multipart/form-data',  // * 중요 *
+        contentType: false,               
+        processData: false,              
+        enctype: 'multipart/form-data', 
         data: imgData,
         success: function (data) {
-          console.log(data);
+          $("#result").text("이 쓰레기는 "+data.percentage+"%의 확률로 "+data.label+" 쓰레기입니다")
         }
       })
-
     })
     function readURL(input) {
       if (input.files && input.files[0]) {
@@ -76,8 +108,6 @@
     $("#selectImg").click(function(e){
       $("#img").click();
     })
-
-
   </script>
   </body>
   
